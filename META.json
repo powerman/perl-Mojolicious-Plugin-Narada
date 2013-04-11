@@ -1,0 +1,57 @@
+{
+   "abstract" : "Narada configuration plugin",
+   "author" : [
+      "Alex Efros <powerman@cpan.org>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.120921",
+   "license" : [
+      "mit"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Mojolicious-Plugin-Narada",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::More" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0"
+         }
+      },
+      "runtime" : {
+         "recommends" : {
+            "Pod::Coverage" : "0.18",
+            "Test::CheckManifest" : "0.9",
+            "Test::Perl::Critic" : "0",
+            "Test::Pod" : "1.22",
+            "Test::Pod::Coverage" : "1.08"
+         },
+         "requires" : {
+            "MojoX::Log::Fast" : "0",
+            "Mojolicious" : "0",
+            "Narada" : "0",
+            "perl" : "v5.10.0",
+            "version" : "0.77"
+         }
+      }
+   },
+   "provides" : {
+      "Mojolicious::Plugin::Narada" : {
+         "file" : "lib/Mojolicious/Plugin/Narada.pm",
+         "version" : "v0.1.0"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://www.opensource.org/licenses/mit-license.php"
+      ]
+   },
+   "version" : "v0.1.0"
+}
