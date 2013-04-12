@@ -16,7 +16,7 @@ name: Mojolicious-Plugin-Narada
 provides:
   Mojolicious::Plugin::Narada:
     file: lib/Mojolicious/Plugin/Narada.pm
-    version: v0.1.0
+    version: v0.1.1
 recommends:
   Pod::Coverage: 0.18
   Test::CheckManifest: 0.9
@@ -31,4 +31,4 @@ requires:
   version: 0.77
 resources:
   license: http://www.opensource.org/licenses/mit-license.php
-version: v0.1.0
+version: v0.1.1

@@ -1,5 +1,9 @@
 Revision history for Mojolicious-Plugin-Narada
 
+0.1.1	Fri Apr 12 20:56:01 EEST 2013
+	Improve doc.
+	Add support for config/basepath.
+
 0.1.0	Thu Apr 11 15:28:07 EEST 2013
 	Initial release.
 

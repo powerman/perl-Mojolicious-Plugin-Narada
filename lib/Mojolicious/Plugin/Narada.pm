@@ -3,7 +3,7 @@ package Mojolicious::Plugin::Narada;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.1.0');    # REMINDER: update Changes
+use version; our $VERSION = qv('0.1.1');    # REMINDER: update Changes
 
 # REMINDER: update dependencies in Build.PL
 use Mojo::Base 'Mojolicious::Plugin';
@@ -36,11 +36,24 @@ sub register {
         pid_file    => 'var/hypnotoad.pid',
     });
 
+    # * Fix url->path and url->base->path.
     # * Set correct ident while handler runs.
     # * unlock() if handler died.
+    my $realbase = Mojo::Path->new( get_config_line('basepath') ) ## no critic(ProhibitLongChainsOfMethodCalls)
+        ->trailing_slash(0)
+        ->leading_slash(1)
+        ->to_string;
     $app->hook(around_dispatch => sub {
         my ($next, $c) = @_;
-        $Log->ident($c->req->url->path);
+        my $url = $c->req->url;
+        my $base = $url->base->path;
+        my $path = $url->path;
+        if ($base eq q{} && $path =~ m{\A\Q$realbase\E(.*)\z}mso) {
+            $path->parse($1);
+        }
+        $base->parse($realbase);
+        $path->leading_slash(1);
+        $Log->ident($url->path);
         my $err = eval { $next->(); 1 } ? undef : $@;
         unlock();
         die $err if defined $err;   ## no critic(RequireCarping)
@@ -145,10 +158,25 @@ call to C<< Mojolicious::Commands->start_app() >>:
 
     use Narada::Config qw( get_config_line );
     # mode should be set here because it's used before executing MyApp::startup()
-    $ENV{MOJO_MODE} = get_config_line('mode');
+    local $ENV{MOJO_MODE} = get_config_line('mode');
 
 Config file C<config/cookie.secret> automatically loaded and used to
 initialize C<< $app->secret() >>.
+
+Config file C<config/basepath> automatically loaded and used to fix
+C<< $c->req->url->base->path >> and C<< $c->req->url->path >> to
+guarantee their consistency in any environment:
+
+=over
+
+=item * url->path doesn't contain base->path
+
+=item * url->path does have leading slash
+
+=item * url->base->path set to content of config/basepath
+
+=back
+
 
 These config files automatically loaded from C<config/hypnotoad/*>
 and used to initialize C<< $app->config(hypnotoad) >>:
