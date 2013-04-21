@@ -44,7 +44,7 @@
    "provides" : {
       "Mojolicious::Plugin::Narada" : {
          "file" : "lib/Mojolicious/Plugin/Narada.pm",
-         "version" : "v0.1.1"
+         "version" : "v0.2.0"
       }
    },
    "release_status" : "stable",
@@ -53,5 +53,5 @@
          "http://www.opensource.org/licenses/mit-license.php"
       ]
    },
-   "version" : "v0.1.1"
+   "version" : "v0.2.0"
 }

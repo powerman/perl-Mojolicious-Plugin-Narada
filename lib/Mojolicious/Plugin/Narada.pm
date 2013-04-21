@@ -3,12 +3,11 @@ package Mojolicious::Plugin::Narada;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.1.1');    # REMINDER: update Changes
+use version; our $VERSION = qv('0.2.0');    # REMINDER: update Changes
 
 # REMINDER: update dependencies in Build.PL
 use Mojo::Base 'Mojolicious::Plugin';
 
-use Mojo::Util qw( monkey_patch );
 use MojoX::Log::Fast;
 use Narada::Config qw( get_config get_config_line );
 use Narada::Lock qw( unlock );
@@ -59,30 +58,31 @@ sub register {
         die $err if defined $err;   ## no critic(RequireCarping)
     });
 
-    monkey_patch 'Mojo::Base', proxy => \&_proxy;
+    $app->helper(proxy => \&_proxy);
 
     return;
 }
 
 sub _proxy {
     my ($this, $cb, @p) = @_;
-    return $this->isa('Mojolicious::Controller')
-        # * Set correct ident while delayed handler runs.
-        # * unlock() if delayed handler died.
-        # * Finalize request with render_exception() if delayed handler died.
-        ? sub {
-            $Log->ident($this->req->url->path);
-            my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
-            unlock();
-            $this->render_exception($err) if defined $err;  ## no critic(ProhibitPostfixControls)
-        }
+    my $is_global_cb = ref $this eq 'Mojolicious::Controller';
+    return $is_global_cb
         # * Set correct ident while global event handler runs.
         # * unlock() if global event handler died.
-        : sub {
+        ? sub {
             $Log->ident($Ident);
             my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
             unlock();
             die $err if defined $err;   ## no critic(RequireCarping)
+        }
+        # * Set correct ident while delayed handler runs.
+        # * unlock() if delayed handler died.
+        # * Finalize request with render_exception() if delayed handler died.
+        : sub {
+            $Log->ident($this->req->url->path);
+            my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
+            unlock();
+            $this->render_exception($err) if defined $err;  ## no critic(ProhibitPostfixControls)
         };
 }
 
@@ -129,7 +129,7 @@ Mojolicious::Plugin::Narada - Narada configuration plugin
 L<Mojolicious::Plugin::Narada> is a plugin that configure L<Mojolicious>
 to work in L<Narada> project management environment.
 
-Also this plugin add method proxy() into L<Mojo::Base>, and you B<MUST>
+Also this plugin add helper C<proxy>, and you B<MUST>
 use it to wrap all callbacks you setup for handling delayed events like
 timers or I/O (both global in your app and related to requests in your
 actions).

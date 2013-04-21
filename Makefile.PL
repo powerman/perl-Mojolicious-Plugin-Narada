@@ -3,17 +3,17 @@ require 5.010000;
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-  'PL_FILES' => {},
-  'INSTALLDIRS' => 'site',
   'NAME' => 'Mojolicious::Plugin::Narada',
-  'EXE_FILES' => [],
   'VERSION_FROM' => 'lib/Mojolicious/Plugin/Narada.pm',
   'PREREQ_PM' => {
-                   'Test::More' => 0,
-                   'version' => '0.77',
-                   'Narada' => 0,
                    'MojoX::Log::Fast' => 0,
-                   'Mojolicious' => 0
-                 }
+                   'Mojolicious' => 0,
+                   'Narada' => 0,
+                   'Test::More' => 0,
+                   'version' => '0.77'
+                 },
+  'INSTALLDIRS' => 'site',
+  'EXE_FILES' => [],
+  'PL_FILES' => {}
 )
 ;

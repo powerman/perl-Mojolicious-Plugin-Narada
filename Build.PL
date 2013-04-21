@@ -2,7 +2,20 @@ use strict;
 use warnings;
 use Module::Build;
 
-my $builder = Module::Build->new(
+my $class = Module::Build->subclass(
+    class => 'Module::Build::Custom',
+    code => <<'SUBCLASS' );
+
+# Better compatibility with Gentoo ebuilds.
+sub dist_version {
+    my $self = shift;
+    my $v = $self->SUPER::dist_version;
+    $v =~ s/\Av//ms;
+    return $v;
+}
+SUBCLASS
+
+my $builder = $class->new(
     module_name         => 'Mojolicious::Plugin::Narada',
     license             => 'mit',
     dist_author         => q{Alex Efros <powerman@cpan.org>},
@@ -29,7 +42,7 @@ my $builder = Module::Build->new(
         'Pod::Coverage'         => '0.18',
         'Test::Pod'             => '1.22',
     },
-    add_to_cleanup     => [ 'Mojolicious-Plugin-Narada-*' ],
+#     add_to_cleanup     => [ 'Mojolicious-Plugin-Narada-*' ],
     create_makefile_pl => 'traditional',
 );
 
