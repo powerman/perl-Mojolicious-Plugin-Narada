@@ -3,7 +3,7 @@ package Mojolicious::Plugin::Narada;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.2.0');    # REMINDER: update Changes
+use version; our $VERSION = qv('0.2.1');    # REMINDER: update Changes
 
 # REMINDER: update dependencies in Build.PL
 use Mojo::Base 'Mojolicious::Plugin';
@@ -66,11 +66,13 @@ sub register {
 sub _proxy {
     my ($this, $cb, @p) = @_;
     my $is_global_cb = ref $this eq 'Mojolicious::Controller';
+    my $__warn__ = $SIG{__WARN__};
     return $is_global_cb
         # * Set correct ident while global event handler runs.
         # * unlock() if global event handler died.
         ? sub {
             $Log->ident($Ident);
+            local $SIG{__WARN__} = $__warn__;
             my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
             unlock();
             die $err if defined $err;   ## no critic(RequireCarping)
@@ -80,6 +82,7 @@ sub _proxy {
         # * Finalize request with render_exception() if delayed handler died.
         : sub {
             $Log->ident($this->req->url->path);
+            local $SIG{__WARN__} = $__warn__;
             my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
             unlock();
             $this->render_exception($err) if defined $err;  ## no critic(ProhibitPostfixControls)

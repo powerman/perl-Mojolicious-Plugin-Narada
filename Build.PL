@@ -1,3 +1,4 @@
+use 5.010;
 use strict;
 use warnings;
 use Module::Build;
@@ -29,7 +30,7 @@ my $builder = $class->new(
 #         'Test::Exception'       => 0,
     },
     requires => {
-        'perl'                  => '5.10.0',
+        'perl'                  => 5.010,
         'version'               => '0.77',
         'Mojolicious'           => 0,
         'MojoX::Log::Fast'      => 0,
@@ -43,7 +44,6 @@ my $builder = $class->new(
         'Test::Pod'             => '1.22',
     },
 #     add_to_cleanup     => [ 'Mojolicious-Plugin-Narada-*' ],
-    create_makefile_pl => 'traditional',
 );
 
 $builder->create_build_script();
