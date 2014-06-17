@@ -3,7 +3,7 @@ package Mojolicious::Plugin::Narada;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.2.1');    # REMINDER: update Changes
+use version; our $VERSION = qv('0.2.2');    # REMINDER: update Changes
 
 # REMINDER: update dependencies in Build.PL
 use Mojo::Base 'Mojolicious::Plugin';
@@ -25,7 +25,11 @@ sub register {
     $app->log($Log);
 
     # Load Mojo-specific config files.
-    $app->secret(get_config_line('cookie.secret'));
+    if ($app->can('secrets')) {
+        $app->secrets([split /\n/ms, get_config('cookie.secret')]);
+    } else {
+        $app->secret(get_config_line('cookie.secret'));
+    }
     $app->config(hypnotoad => {
         listen      => [split /\n/ms, get_config('hypnotoad/listen')],
         proxy       => get_config_line('hypnotoad/proxy'),
@@ -38,7 +42,7 @@ sub register {
     # * Fix url->path and url->base->path.
     # * Set correct ident while handler runs.
     # * unlock() if handler died.
-    my $realbase = Mojo::Path->new( get_config_line('basepath') ) ## no critic(ProhibitLongChainsOfMethodCalls)
+    my $realbase = Mojo::Path->new( get_config_line('basepath') )
         ->trailing_slash(0)
         ->leading_slash(1)
         ->to_string;
@@ -164,7 +168,7 @@ call to C<< Mojolicious::Commands->start_app() >>:
     local $ENV{MOJO_MODE} = get_config_line('mode');
 
 Config file C<config/cookie.secret> automatically loaded and used to
-initialize C<< $app->secret() >>.
+initialize C<< $app->secrets() >>.
 
 Config file C<config/basepath> automatically loaded and used to fix
 C<< $c->req->url->base->path >> and C<< $c->req->url->path >> to
@@ -270,7 +274,7 @@ Alex Efros  C<< <powerman@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2013 Alex Efros <powerman@cpan.org>.
+Copyright 2013,2014 Alex Efros <powerman@cpan.org>.
 
 This program is distributed under the MIT (X11) License:
 L<http://www.opensource.org/licenses/mit-license.php>
