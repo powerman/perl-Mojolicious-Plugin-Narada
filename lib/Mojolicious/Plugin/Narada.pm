@@ -3,7 +3,7 @@ package Mojolicious::Plugin::Narada;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.2.2');    # REMINDER: update Changes
+use version; our $VERSION = qv('0.2.3');    # REMINDER: update Changes
 
 # REMINDER: update dependencies in Build.PL
 use Mojo::Base 'Mojolicious::Plugin';
@@ -35,7 +35,6 @@ sub register {
         proxy       => get_config_line('hypnotoad/proxy'),
         accepts     => get_config_line('hypnotoad/accepts'),
         workers     => get_config_line('hypnotoad/workers'),
-        lock_file   => 'var/hypnotoad.lock',
         pid_file    => 'var/hypnotoad.pid',
     });
 
@@ -83,13 +82,13 @@ sub _proxy {
         }
         # * Set correct ident while delayed handler runs.
         # * unlock() if delayed handler died.
-        # * Finalize request with render_exception() if delayed handler died.
+        # * Finalize request with reply->exception() if delayed handler died.
         : sub {
             $Log->ident($this->req->url->path);
             local $SIG{__WARN__} = $__warn__;
             my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
             unlock();
-            $this->render_exception($err) if defined $err;  ## no critic(ProhibitPostfixControls)
+            $this->reply->exception($err) if defined $err;  ## no critic(ProhibitPostfixControls)
         };
 }
 
@@ -143,7 +142,7 @@ actions).
 
 There is also one feature unrelated to Narada - if callback started by any
 action throw unhandled exception it will be sent to browser using same
-C<< $c->render_exception >> as it already works for actions without
+C<< $c->reply->exception >> as it already works for actions without
 delayed response.
 
 =over
@@ -155,7 +154,7 @@ support logging to project-local syslog daemon in addition to files.
 In most cases it works as drop-in replacement and doesn't require any
 modifications in user code.
 
-Also it set C<< $app->log->indent() >> to C<< $c->req->url->path >> to
+Also it set C<< $app->log->ident() >> to C<< $c->req->url->path >> to
 ease log file analyse.
 
 =item Configuration
@@ -168,7 +167,8 @@ call to C<< Mojolicious::Commands->start_app() >>:
     local $ENV{MOJO_MODE} = get_config_line('mode');
 
 Config file C<config/cookie.secret> automatically loaded and used to
-initialize C<< $app->secrets() >>.
+initialize C<< $app->secrets() >> (each line of file became separate
+param).
 
 Config file C<config/basepath> automatically loaded and used to fix
 C<< $c->req->url->base->path >> and C<< $c->req->url->path >> to

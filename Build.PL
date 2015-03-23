@@ -32,7 +32,7 @@ my $builder = $class->new(
     requires => {
         'perl'                  => 5.010,
         'version'               => '0.77',
-        'Mojolicious'           => 0,
+        'Mojolicious'           => 6.0,
         'MojoX::Log::Fast'      => 0,
         'Narada'                => 0,
     },
