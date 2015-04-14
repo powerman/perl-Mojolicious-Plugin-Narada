@@ -1078,6 +1078,7 @@ allow = refs
 
 # Permitted warning categories.
 # allow = 
+allow = redefine
 
 # Allow "no warnings" if it restricts the kinds of warnings that are turned off.
 # allow_with_category_restriction = 0

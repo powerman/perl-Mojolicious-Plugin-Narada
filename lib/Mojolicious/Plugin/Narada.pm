@@ -3,7 +3,7 @@ package Mojolicious::Plugin::Narada;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.2.3');    # REMINDER: update Changes
+use version; our $VERSION = qv('0.3.0');    # REMINDER: update Changes
 
 # REMINDER: update dependencies in Build.PL
 use Mojo::Base 'Mojolicious::Plugin';
@@ -70,6 +70,7 @@ sub _proxy {
     my ($this, $cb, @p) = @_;
     my $is_global_cb = ref $this eq 'Mojolicious::Controller';
     my $__warn__ = $SIG{__WARN__};
+    my $ident = $Log->ident;
     return $is_global_cb
         # * Set correct ident while global event handler runs.
         # * unlock() if global event handler died.
@@ -84,7 +85,7 @@ sub _proxy {
         # * unlock() if delayed handler died.
         # * Finalize request with reply->exception() if delayed handler died.
         : sub {
-            $Log->ident($this->req->url->path);
+            $Log->ident($ident);
             local $SIG{__WARN__} = $__warn__;
             my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
             unlock();
@@ -274,7 +275,7 @@ Alex Efros  C<< <powerman@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2013,2014 Alex Efros <powerman@cpan.org>.
+Copyright 2013,2014-2015 Alex Efros <powerman@cpan.org>.
 
 This program is distributed under the MIT (X11) License:
 L<http://www.opensource.org/licenses/mit-license.php>

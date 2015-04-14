@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Narada
 
+0.3.0   Tue Apr 14 14:30:05 EEST 2015
+	Reuse user's ident in proxy().
+
 0.2.3   Mon Mar 23 16:51:10 EET 2015
 	Require Mojolicious-6.0.
 	Fix typo in doc.
