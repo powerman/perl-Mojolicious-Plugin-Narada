@@ -3,7 +3,7 @@ package Mojolicious::Plugin::Narada;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.3.0');    # REMINDER: update Changes
+use version; our $VERSION = qv('0.3.1');    # REMINDER: update Changes
 
 # REMINDER: update dependencies in Build.PL
 use Mojo::Base 'Mojolicious::Plugin';
@@ -68,10 +68,9 @@ sub register {
 
 sub _proxy {
     my ($this, $cb, @p) = @_;
-    my $is_global_cb = ref $this eq 'Mojolicious::Controller';
     my $__warn__ = $SIG{__WARN__};
     my $ident = $Log->ident;
-    return $is_global_cb
+    return $this->isa('Mojolicious')
         # * Set correct ident while global event handler runs.
         # * unlock() if global event handler died.
         ? sub {
