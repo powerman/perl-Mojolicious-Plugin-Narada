@@ -3,7 +3,7 @@ package Mojolicious::Plugin::Narada;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.3.1');    # REMINDER: update Changes
+use version; our $VERSION = qv('0.4.0');    # REMINDER: update Changes
 
 # REMINDER: update dependencies in Build.PL
 use Mojo::Base 'Mojolicious::Plugin';
@@ -11,8 +11,10 @@ use Mojo::Base 'Mojolicious::Plugin';
 use MojoX::Log::Fast;
 use Narada::Config qw( get_config get_config_line );
 use Narada::Lock qw( unlock );
+use Scalar::Util qw( weaken );
 
 my ($Log, $Ident);
+our $IN_CB = 0;
 
 
 sub register {
@@ -61,35 +63,39 @@ sub register {
         die $err if defined $err;   ## no critic(RequireCarping)
     });
 
-    $app->helper(proxy => \&_proxy);
+    $app->helper(proxy      => sub { return _proxy(0, @_) });
+    $app->helper(weak_proxy => sub { return _proxy(1, @_) });
 
     return;
 }
 
 sub _proxy {
-    my ($this, $cb, @p) = @_;
-    my $__warn__ = $SIG{__WARN__};
-    my $ident = $Log->ident;
-    return $this->isa('Mojolicious')
-        # * Set correct ident while global event handler runs.
-        # * unlock() if global event handler died.
-        ? sub {
-            $Log->ident($Ident);
-            local $SIG{__WARN__} = $__warn__;
-            my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
-            unlock();
-            die $err if defined $err;   ## no critic(RequireCarping)
-        }
-        # * Set correct ident while delayed handler runs.
-        # * unlock() if delayed handler died.
-        # * Finalize request with reply->exception() if delayed handler died.
-        : sub {
+    my ($is_weak, $this, $cb, @p) = @_;
+    if ($is_weak) {
+        weaken($this);
+    }
+    my $is_global_cb= ref $this eq 'Mojolicious::Controller';
+    my $ident       = $is_global_cb ? $Ident : $Log->ident;
+    my $__warn__    = $SIG{__WARN__};
+    return sub {
+        return if !$this;
+        my $cur_ident = $Log->ident($ident);
+        local $SIG{__WARN__} = $__warn__;
+        my $err = eval { local $IN_CB=1; $cb->($this, @p, @_); 1 } ? undef : $@;
+        if (defined $err) {
             $Log->ident($ident);
-            local $SIG{__WARN__} = $__warn__;
-            my $err = eval { $cb->($this, @p, @_); 1 } ? undef : $@;
-            unlock();
-            $this->reply->exception($err) if defined $err;  ## no critic(ProhibitPostfixControls)
-        };
+            if (!$IN_CB) {
+                unlock()
+            }
+            if ($is_global_cb || $is_weak) {
+                die $err;   ## no critic(RequireCarping)
+            }
+            else {
+                $this->reply->exception($err);
+            }
+        }
+        $Log->ident($cur_ident);
+    };
 }
 
 
@@ -125,9 +131,11 @@ Mojolicious::Plugin::Narada - Narada configuration plugin
     sub myaction {
         my $c = shift;
         $c->render_later;
+        Mojo::IOLoop->timer(1 => $c->weak_proxy(sub { say 'Alive' }));
         Mojo::IOLoop->timer(2 => $c->proxy(sub {
               $c->render(text => 'Delayed by 2 seconds!');
         }));
+        Mojo::IOLoop->timer(3 => $c->weak_proxy(sub { say 'Dead' }));
     }
 
 =head1 DESCRIPTION
@@ -135,8 +143,8 @@ Mojolicious::Plugin::Narada - Narada configuration plugin
 L<Mojolicious::Plugin::Narada> is a plugin that configure L<Mojolicious>
 to work in L<Narada> project management environment.
 
-Also this plugin add helper C<proxy>, and you B<MUST>
-use it to wrap all callbacks you setup for handling delayed events like
+Also this plugin add helpers C<proxy> and C<weak_proxy>, and you B<MUST>
+use them to wrap all callbacks you setup for handling delayed events like
 timers or I/O (both global in your app and related to requests in your
 actions).
 

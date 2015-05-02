@@ -1,5 +1,11 @@
 Revision history for Mojolicious-Plugin-Narada
 
+0.4.0   Sat May  2 02:51:18 EEST 2015
+	Add weak_proxy().
+	Fix modified ident after calling proxy-callback.
+	Fix premature unlock().
+	Revert 0.3.1.
+
 0.3.1   Thu Apr 30 17:25:27 EEST 2015
 	Fix $app vs $c detection in proxy().
 
