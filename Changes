@@ -1,36 +1,39 @@
 Revision history for Mojolicious-Plugin-Narada
 
-0.4.0   Sat May  2 02:51:18 EEST 2015
-	Add weak_proxy().
-	Fix modified ident after calling proxy-callback.
-	Fix premature unlock().
-	Revert 0.3.1.
+{{$NEXT}}
+	- Switch to Dist::Milla.
 
-0.3.1   Thu Apr 30 17:25:27 EEST 2015
-	Fix $app vs $c detection in proxy().
+0.4.0   2015-05-02 02:51:18 EEST
+	- Add weak_proxy().
+	- Fix modified ident after calling proxy-callback.
+	- Fix premature unlock().
+	- Revert 0.3.1.
 
-0.3.0   Tue Apr 14 14:30:05 EEST 2015
-	Reuse user's ident in proxy().
+0.3.1   2015-04-30 17:25:27 EEST
+	- Fix $app vs $c detection in proxy().
 
-0.2.3   Mon Mar 23 16:51:10 EET 2015
-	Require Mojolicious-6.0.
-	Fix typo in doc.
+0.3.0   2015-04-14 14:30:05 EEST
+	- Reuse user's ident in proxy().
 
-0.2.2   Wed Jun 18 00:20:10 EEST 2014
-	Fix compatibility with Mojolicious-4.63.
+0.2.3   2015-03-23 16:51:10 EET
+	- Require Mojolicious-6.0.
+	- Fix typo in doc.
 
-0.2.1   Mon May 20 19:26:59 EEST 2013
-	Improve compatibility with CPAN Testers.
-	Keep context's $SIG{__WARN__}.
+0.2.2   2014-06-18 00:20:10 EEST
+	- Fix compatibility with Mojolicious-4.63.
 
-0.2.0	Sun Apr 21 16:30:00 EEST 2013
-	Replace monkey_patch with helper.
-	Remove "v" from version in .tar.gz.
+0.2.1   2013-05-20 19:26:59 EEST
+	- Improve compatibility with CPAN Testers.
+	- Keep context's $SIG{__WARN__}.
 
-0.1.1	Fri Apr 12 20:56:01 EEST 2013
-	Improve doc.
-	Add support for config/basepath.
+0.2.0	2013-04-21 16:30:00 EEST
+	- Replace monkey_patch with helper.
+	- Remove "v" from version in .tar.gz.
 
-0.1.0	Thu Apr 11 15:28:07 EEST 2013
-	Initial release.
+0.1.1	2013-04-12 20:56:01 EEST
+	- Improve doc.
+	- Add support for config/basepath.
+
+0.1.0	2013-04-11 15:28:07 EEST
+	- Initial release.
 
