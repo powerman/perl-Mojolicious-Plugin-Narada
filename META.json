@@ -58,7 +58,7 @@
    "provides" : {
       "Mojolicious::Plugin::Narada" : {
          "file" : "lib/Mojolicious/Plugin/Narada.pm",
-         "version" : "v0.4.0"
+         "version" : "v1.0.0"
       }
    },
    "release_status" : "stable",
@@ -73,6 +73,6 @@
          "web" : "https://github.com/powerman/perl-Mojolicious-Plugin-Narada"
       }
    },
-   "version" : "v0.4.0"
+   "version" : "v1.0.0"
 }
 

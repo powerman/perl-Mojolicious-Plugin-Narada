@@ -7,7 +7,7 @@ Mojolicious::Plugin::Narada - Narada configuration plugin
 
 # VERSION
 
-This document describes Mojolicious::Plugin::Narada version v0.4.0
+This document describes Mojolicious::Plugin::Narada version v1.0.0
 
 # SYNOPSIS
 

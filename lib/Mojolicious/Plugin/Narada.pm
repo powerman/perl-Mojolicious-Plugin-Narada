@@ -2,7 +2,7 @@ package Mojolicious::Plugin::Narada;
 
 use Mojo::Base 'Mojolicious::Plugin';
 
-our $VERSION = 'v0.4.0';
+our $VERSION = 'v1.0.0';
 
 use MojoX::Log::Fast;
 use Narada::Config qw( get_config get_config_line );
@@ -107,7 +107,7 @@ Mojolicious::Plugin::Narada - Narada configuration plugin
 
 =head1 VERSION
 
-This document describes Mojolicious::Plugin::Narada version v0.4.0
+This document describes Mojolicious::Plugin::Narada version v1.0.0
 
 
 =head1 SYNOPSIS
