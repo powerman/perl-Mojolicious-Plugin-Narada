@@ -109,6 +109,16 @@ delayed response.
 
 Value for [MojoX::Log::Fast](https://metacpan.org/pod/MojoX::Log::Fast)->new().
 
+# HELPERS
+
+## proxy
+
+## weak\_proxy
+
+    $cb = $app->proxy( $cb );
+    $cb = $c->proxy( $cb );
+    $cb = $c->weak_proxy( $cb );
+
 # METHODS
 
 [Mojolicious::Plugin::Narada](https://metacpan.org/pod/Mojolicious::Plugin::Narada) inherits all methods from
@@ -171,7 +181,7 @@ Alex Efros &lt;powerman@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2013-2015 by Alex Efros &lt;powerman@cpan.org>.
+This software is Copyright (c) 2013- by Alex Efros &lt;powerman@cpan.org>.
 
 This is free software, licensed under:
 

@@ -193,7 +193,6 @@ guarantee their consistency in any environment:
 
 =back
 
-
 These config files automatically loaded from C<config/hypnotoad/*>
 and used to initialize C<< $app->config(hypnotoad) >>:
 
@@ -221,6 +220,17 @@ L<Mojolicious::Plugin::Narada> supports the following options.
   plugin Narada => (log => Log::Fast->global);
 
 Value for L<MojoX::Log::Fast>->new().
+
+
+=head1 HELPERS
+
+=head2 proxy
+
+=head2 weak_proxy
+
+    $cb = $app->proxy( $cb );
+    $cb = $c->proxy( $cb );
+    $cb = $c->weak_proxy( $cb );
 
 
 =head1 METHODS
@@ -293,7 +303,7 @@ Alex Efros E<lt>powerman@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2013-2015 by Alex Efros E<lt>powerman@cpan.orgE<gt>.
+This software is Copyright (c) 2013- by Alex Efros E<lt>powerman@cpan.orgE<gt>.
 
 This is free software, licensed under:
 

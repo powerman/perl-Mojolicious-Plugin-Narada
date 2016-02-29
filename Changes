@@ -1,6 +1,7 @@
 Revision history for Mojolicious-Plugin-Narada
 
 {{$NEXT}}
+	- Reformat doc.
 
 v1.0.0  2016-02-19 09:40:05 EET
 	- Switch to Dist::Milla.
