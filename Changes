@@ -1,6 +1,8 @@
 Revision history for Mojolicious-Plugin-Narada
 
 {{$NEXT}}
+
+v1.0.1  2018-04-03 20:16:43 EEST
 	- Reformat doc.
 
 v1.0.0  2016-02-19 09:40:05 EET
